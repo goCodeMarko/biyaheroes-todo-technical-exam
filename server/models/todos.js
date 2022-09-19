@@ -5,11 +5,11 @@ const
 let $global = { results: [] };
 
 Todos = mongoose.model(base, mongoose.Schema({
-    todoReference: { type: String, required: true },
-    todoTitle: { type: String, default: 0, required: true },
-    todoDescription: { type: String, required: true },
-    isdeleted:       { type: Boolean, default: false },
-    todoDatetimestamp: { type: Date, default: new Date() }
+    todoReference:      { type: String, required: true },
+    todoTitle:          { type: String, default: 0, required: true },
+    todoDescription:    { type: String, required: true },
+    todoDatetimestamp:  { type: Date, default: new Date() },
+    // isdeleted:          { type: Boolean, default: false }
 }));
 
 
@@ -20,7 +20,7 @@ module.exports.getTodos = async (req, cb) => {
         const todos = await Todos.aggregate([
             { $match: { isdeleted: false } }
         ]);
-
+        
         $global.results = todos;
     } catch (error) {
         console.error('Models::todos:getTodos()', error);
@@ -46,10 +46,13 @@ module.exports.saveTodo = async (req, cb) => {
 module.exports.deleteTodo = async (req, cb) => {
     try {
         const id = req.body.id;
+        /*
         const result = await Todos.updateOne(
             { _id: id },
             { $set: { isdeleted: true } }
         )
+        */
+        const result = await Todos.deleteOne({'_id': id });
 
         $global.queryResult = result;
     } catch (error) {

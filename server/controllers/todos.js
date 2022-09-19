@@ -42,3 +42,27 @@ module.exports.deleteTodo = async (req) => {
         return $global;
     }
 };
+
+module.exports.checkTitleExists = async (req) => {
+    try {
+        await model.checkTitleExists(req, (results) => {
+            $global.data = results;
+        });
+    } catch (error) {
+        console.error('Controller::Todos::checkTitleExists()', error);
+    } finally {
+        return $global;
+    }
+};
+
+module.exports.checkReferenceExists = async (req) => {
+    try {
+        await model.checkReferenceExists(req, (results) => {
+            $global.data = results;
+        });
+    } catch (error) {
+        console.error('Controller::Todos::checkReferenceExists()', error);
+    } finally {
+        return $global;
+    }
+};

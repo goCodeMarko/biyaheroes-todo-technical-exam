@@ -69,6 +69,20 @@ const server = http.createServer(async (req, res) => {
                 res.writeHead(result.code, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify(result));
             }
+            
+            if (req.rawURL == '/checkTitleExists') {
+                const result = await todosController.checkTitleExists(req);
+
+                res.writeHead(result.code, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify(result));
+            }
+
+            if (req.rawURL == '/checkReferenceExists') {
+                const result = await todosController.checkReferenceExists(req);
+
+                res.writeHead(result.code, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify(result));
+            }
             break;
         case 'POST':
             if (req.rawURL == '/saveTodo') {

@@ -35,7 +35,7 @@ module.exports.saveTodo = async (req, cb) => {
         const newTodos = new Todos(data);
         const insert = await newTodos.save();
 
-        $global.queryResult = insert;
+        $global.results = insert;
     } catch (error) {
         console.error('Models::todos:saveTodo()', error);
     } finally {
@@ -54,9 +54,35 @@ module.exports.deleteTodo = async (req, cb) => {
         */
         const result = await Todos.deleteOne({'_id': id });
 
-        $global.queryResult = result;
+        $global.results = result;
     } catch (error) {
         console.error('Models::todos:deleteTodo()', error);
+    } finally {
+        cb($global);
+    }
+}
+
+module.exports.checkTitleExists = async (req, cb) => {
+    try {
+        const title = req.queryParams.title;
+        const result = await Todos.find({ 'todoTitle': title });
+
+        $global.results = result.length;
+    } catch (error) {
+        console.error('Models::todos:checkTitleExists()', error);
+    } finally {
+        cb($global);
+    }
+}
+
+module.exports.checkReferenceExists = async (req, cb) => {
+    try {
+        const reference = req.queryParams.reference;
+        const result = await Todos.find({ 'todoReference': reference });
+
+        $global.results = result.length;
+    } catch (error) {
+        console.error('Models::todos:checkReferenceExists()', error);
     } finally {
         cb($global);
     }

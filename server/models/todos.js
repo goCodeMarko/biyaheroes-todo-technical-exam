@@ -17,9 +17,7 @@ Todos = mongoose.model(base, mongoose.Schema({
 
 module.exports.getTodos = async (req, cb) => {
     try {
-        const todos = await Todos.aggregate([
-            { $match: { isdeleted: false } }
-        ]);
+        const todos = await Todos.find();
         
         $global.results = todos;
     } catch (error) {
@@ -31,7 +29,13 @@ module.exports.getTodos = async (req, cb) => {
 
 module.exports.saveTodo = async (req, cb) => {
     try {
-        const data = req.body;
+
+        const data = {
+            todoReference: req.body.todoReference,
+            todoTitle: req.body.todoTitle,
+            todoDescription: req.body.todoDescription,
+        }
+
         const newTodos = new Todos(data);
         const insert = await newTodos.save();
 

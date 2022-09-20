@@ -1,8 +1,8 @@
 const
-    path = require('path'),
-    base = path.basename(__filename, '.js'),
-    model = require(`./../models/${base}`);
-let $global = { success: true, data: [], message: '', code: 200 };
+    path     = require('path'),
+    base     = path.basename(__filename, '.js'),
+    model    = require(`./../models/${base}`);
+let $global  = { success: true, data: [], message: '', code: 200 };
 
 
 

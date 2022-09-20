@@ -62,10 +62,10 @@ module.exports.clientFiles = async (url, res) => {
   let ext = path.extname(url); 
 
   if(url == '/' || fileExt.includes(ext)) { //checks url extension
-        ext = ext || '.html';
-        const filename = path.basename(url, ext) || 'index';
-        let headers = { 'Content-Type': 'text/html' };
-        let file = path.join(__dirname, '..', '..', 'client', `${filename}${ext}`);
+        ext             = ext || '.html';
+        const filename  = path.basename(url, ext) || 'index';
+        let headers     = { 'Content-Type': 'text/html' };
+        let file        = path.join(__dirname, '..', '..', 'client', `${filename}${ext}`);
 
         switch (ext) {
             case '.js':

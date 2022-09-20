@@ -1,8 +1,8 @@
 const
-    path = require('path'),
-    base = path.basename(__filename, '.js'),
-    mongoose = require('mongoose');
-let $global = { results: [] };
+    path       = require('path'),
+    base       = path.basename(__filename, '.js'),
+    mongoose   = require('mongoose');
+let $global    = { results: [] };
 
 Todos = mongoose.model(base, mongoose.Schema({
     todoReference:      { type: String, required: true },

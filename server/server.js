@@ -1,9 +1,9 @@
 
 const
-    http = require('http'),
-    path = require('path'),
-    lib = require('./library'),
-    mongoose = require('mongoose'),
+    http            = require('http'),
+    path            = require('path'),
+    lib             = require('./library'),
+    mongoose        = require('mongoose'),
     todosController = require('./controllers/todos');
 
 
@@ -24,8 +24,8 @@ mongoose.connect('mongodb+srv://pdulaca_user1:a7OdGl37bGDKMZ8W@cluster0.zmj3z2d.
 })
 
 const server = http.createServer(async (req, res) => {
-    req.rawURL = await lib.rawURL(req.url)
-    req.body = await lib.bodyParser(req);
+    req.rawURL      = await lib.rawURL(req.url)
+    req.body        = await lib.bodyParser(req);
     req.queryParams = await lib.queryParams(req.url);
 
     switch (req.method) {

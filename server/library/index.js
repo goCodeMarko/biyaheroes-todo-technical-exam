@@ -15,7 +15,7 @@ module.exports.bodyParser = async (req) => {
     const data = Buffer.concat(buffers).toString(); // concatenates all the buffer object then convert it to string
 
     if (data) json = JSON.parse(data); // converts to json
-
+    
     return json;
 }
 
@@ -32,13 +32,16 @@ module.exports.queryParams = async (url) => {
 
             x.forEach(param => {
                 let array = param.split('=');
-                queryParams[array[0]] = array[1];
+                let value = array[1].replace(/\+/g, ' '); //replaces "+" to space " "
+
+                queryParams[array[0]] = value;
             });
 
             console.log('multiple');
         } else { // else only have one param
             let array = params.split('=');
-            queryParams[array[0]] = array[1];
+            let value = array[1].replace(/\+/g, ' '); //replaces "+" to space " "
+            queryParams[array[0]] = value;
 
             console.log('single');
         }

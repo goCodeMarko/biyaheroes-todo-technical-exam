@@ -40,6 +40,9 @@ body {
 .section-a .form .form-group   {
     margin-bottom: .5em;
 }
+.section-a .form .form-group .error{
+    color: red;
+}
 .section-a .form .form-group input, .form .form-group textarea  {
     display: block !important;
     width: 25em;

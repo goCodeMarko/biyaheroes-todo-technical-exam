@@ -2,7 +2,6 @@
 const
     http = require('http'),
     path = require('path'),
-    fs = require('fs'),
     lib = require('./library'),
     mongoose = require('mongoose'),
     todosController = require('./controllers/todos');
@@ -29,55 +28,25 @@ const server = http.createServer(async (req, res) => {
     req.body = await lib.bodyParser(req);
     req.queryParams = await lib.queryParams(req.url);
 
-    if (req.rawURL == '/') {
-        const file = path.join(__dirname, '..', 'client', 'index.html');
-
-        fs.readFile(file, (err, data) => {
-            res.writeHead(200, { 'Content-Type': 'text/html' });
-            res.end(data);
-        })
-
-    }
-    if (req.rawURL == '/style.css') {
-        const file = path.join(__dirname, '..', 'client', 'style.css');
-
-        fs.readFile(file, (err, data) => {
-            res.writeHead(200, { 'Content-Type': 'text/css' });
-            res.end(data);
-        })
-
-    }
-    if (req.rawURL == '/script.js') {
-        const file = path.join(__dirname, '..', 'client', 'script.js');
-
-        fs.readFile(file, (err, data) => {
-            res.writeHead(200, { 'Content-Type': 'text/javascript' });
-            res.end(data);
-        })
-
-    }
-
-    console.log('req.rawURL', req.rawURL);
-    console.log('req.queryParams', req.queryParams);
-    console.log('req.body', req.body);
-    console.log('req.method', req.method);
     switch (req.method) {
         case 'GET':
-            if (req.rawURL == '/getTodos') {
+            lib.clientFiles(req.rawURL, res);
+
+            if (req.rawURL == '/api/getTodos') {
                 const result = await todosController.getTodos();
 
                 res.writeHead(result.code, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify(result));
             }
             
-            if (req.rawURL == '/checkTitleExists') {
+            if (req.rawURL == '/api/checkTitleExists') {
                 const result = await todosController.checkTitleExists(req);
 
                 res.writeHead(result.code, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify(result));
             }
 
-            if (req.rawURL == '/checkReferenceExists') {
+            if (req.rawURL == '/api/checkReferenceExists') {
                 const result = await todosController.checkReferenceExists(req);
 
                 res.writeHead(result.code, { 'Content-Type': 'application/json' });
@@ -85,14 +54,14 @@ const server = http.createServer(async (req, res) => {
             }
             break;
         case 'POST':
-            if (req.rawURL == '/saveTodo') {
+            if (req.rawURL == '/api/saveTodo') {
                 const result = await todosController.saveTodo(req);
 
                 res.writeHead(200, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify(result));
             }
 
-            if (req.rawURL == '/deleteTodo') {
+            if (req.rawURL == '/api/deleteTodo') {
                 const result = await todosController.deleteTodo(req);
 
                 res.writeHead(200, { 'Content-Type': 'application/json' });

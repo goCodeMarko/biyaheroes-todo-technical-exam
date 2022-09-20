@@ -1,3 +1,9 @@
+const 
+    path    = require('path'),
+    fs      = require('fs');
+
+
+
 module.exports.bodyParser = async (req) => {
     const buffers = [];
     let json;
@@ -42,11 +48,37 @@ module.exports.queryParams = async (url) => {
 }
 
 module.exports.rawURL = async (url) => {
-    // removes query parameters   ex. /saveTodos?x=23&y=12 will become /saveTodos
+    // removes query parameters   ex. "/saveTodos?x=23&y=12" will become "/saveTodos"
     const i = url.indexOf('?');
     if (i !== -1) {
         url = url.slice(0, i);
     }
 
     return url;
+}
+
+module.exports.clientFiles = async (url, res) => {
+  const fileExt = ['.js', '.css', '.ico']; //allowed extensions
+  let ext = path.extname(url); 
+
+  if(url == '/' || fileExt.includes(ext)) { //checks url extension
+        ext = ext || '.html';
+        const filename = path.basename(url, ext) || 'index';
+        let headers = { 'Content-Type': 'text/html' };
+        let file = path.join(__dirname, '..', '..', 'client', `${filename}${ext}`);
+
+        switch (ext) {
+            case '.js':
+                headers['Content-Type'] = 'text/javascript'
+                break;
+            case '.css':
+                headers['Content-Type'] = 'text/css'
+                break;
+        }
+
+        fs.readFile(file, (err, data) => {
+            res.writeHead(200, headers);
+            res.end(data);
+        });
+    }
 }

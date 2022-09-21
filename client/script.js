@@ -18,7 +18,7 @@ window.onload = function () {
         $btnNewTodo     = document.querySelector('#btnNewTodo');
         $btnClear       = document.querySelector('#btnClear');
         $base = 'https://biyaheroes-todo-technical-exam.herokuapp.com/api/';
-
+        // $base = 'http://localhost/api/';            
         getTodoListAPI();
     })();
 

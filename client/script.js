@@ -1,5 +1,5 @@
 window.onload = function () {
-    let $todolist, $form, $btnEdit, $btnSave, $btnNewTodo, $formControls, $tableHeaders, $buttons, $formError;
+    let $todolist, $form, $btnEdit, $btnSave, $btnNewTodo, $formControls, $tableHeaders, $buttons;
 
 
     const init = (() => {
@@ -10,7 +10,7 @@ window.onload = function () {
                             { id: 'todoReference',   check: ['required', 'unique'] }, 
                             { id: 'todoTitle',       check: ['required', 'unique'] }, 
                             { id: 'todoDescription', check: ['required'] },
-                            { id: 'id',              check: [] }
+                            { id: '_id',             check: [] }
                         ];
         $tableHeaders   = ['todoReference', 'todoTitle', 'todoDatetimestamp', '_id'];
         $buttons        = ['Delete', 'View']; 
@@ -49,6 +49,7 @@ window.onload = function () {
         const retrievedData = $todolist.find(data => {
             return data._id === id;
         });
+        clearInputs();
 
         $btnSave.setAttribute('hidden', true);
         $btnEdit.removeAttribute('hidden');
@@ -69,6 +70,12 @@ window.onload = function () {
             });
             $todolist.splice(i, 1);
 
+            $btnEdit.setAttribute('hidden', true);
+            $btnNewTodo.setAttribute('hidden', true);
+            $btnSave.removeAttribute('hidden');
+            setFormTitle('ADD');
+            clearInputs();
+            enabledInputs();
             document.getElementById(id).remove();
         }
     }
@@ -142,13 +149,26 @@ window.onload = function () {
         return result;
     }
 
+    async function updateTodo(formData) {
+        const raw = await fetch('http://localhost:3000/api/updateTodo', {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            method: 'PUT',
+            body: JSON.stringify(formData)
+        });
+        const result = await raw.json();
+
+        return result;
+    }
+
     async function errorChecker() {
         let error = false;
 
         for await (const control of $formControls) {
             const input = document.getElementById(control.id);
             const small = document.getElementById('errMsg_' + control.id);
-            const i = $formControls.map(object => object.id).indexOf(control.id);
 
             if (control.check.includes('required')) { //when form control has required checker
                 if (!input.value) {  
@@ -161,7 +181,8 @@ window.onload = function () {
                 }
             }
             if (control.check.includes('unique')) { //when form control has unique checker
-                let exists = input.value ? await checkExists(control.id, document.getElementById(control.id).value) : false;
+                const id = document.getElementById('_id').value;
+                let exists = input.value ? await checkExists(control.id, input.value, id) : false;
                 
                 if (input.value && exists) {
                     error = true;
@@ -177,21 +198,21 @@ window.onload = function () {
         return error; 
     }
 
-    async function checkExists(control, value) {
+    async function checkExists(control, value, id) {
         let exists;
             switch (control) {
                 case 'todoTitle':
-                     exists = await checkTitleExistsAPI(value);
+                     exists = await checkTitleExistsAPI(value, id);
                     break;
                 case 'todoReference':
-                    exists = await checkReferenceExistsAPI(value);
+                    exists = await checkReferenceExistsAPI(value, id);
                     break;
             }
         return exists;
     }
 
-    async function checkTitleExistsAPI(value) {
-        const params = { title : value };
+    async function checkTitleExistsAPI(value, id) {
+        const params = { title : value, id};
         const raw = await fetch('http://localhost:3000/api/checkTitleExists' + '?' + (new URLSearchParams(params)).toString(), {
             headers: {
                 'Accept': 'application/json'
@@ -204,8 +225,8 @@ window.onload = function () {
             return result.data.results ? true : false;
         }
     }
-    async function checkReferenceExistsAPI(value) {
-        const params = { reference: value };
+    async function checkReferenceExistsAPI(value, id) {
+        const params = { reference: value, id };
         const raw = await fetch('http://localhost:3000/api/checkReferenceExists' + '?' + (new URLSearchParams(params)).toString(), {
             headers: {
                 'Accept': 'application/json'
@@ -247,10 +268,12 @@ window.onload = function () {
         });
     }
 
-    function enabledInputs() {
+    function enabledInputs(controls = []) {
         $formControls.forEach(control => { //enables the input field depends to the list of form controls array
-            const input = document.getElementById(control.id);
-            input.removeAttribute('disabled')
+            if (!controls.includes(control.id)){
+                const input = document.getElementById(control.id);
+                input.removeAttribute('disabled')
+            }
         });
     }
 
@@ -258,6 +281,13 @@ window.onload = function () {
         $formControls.forEach(control => { //clears the input field depends to the list of form controls array
             const input = document.getElementById(control.id);
             input.value = '';
+
+            if (control.id != '_id') {
+                const input = document.getElementById(control.id);
+                const small = document.getElementById('errMsg_' + control.id);
+                input.style.borderColor = 'black';
+                small.innerHTML = '';
+            }
         });
     }
 
@@ -272,16 +302,34 @@ window.onload = function () {
                 form[control.id] =  document.getElementById(control.id).value;
             })
 
-            if(!form.id){ //means new data
+            if(!form._id){ //means new data
                 const result = await saveTodoAPI(form);
                 
                 if(result.data.results._id){  //pushes to the array when added successfully
                     $todolist.push(result.data.results);
 
                     addTableRow(result.data.results); // adds "<tr>" to the "<table>"
+                    clearInputs();
                 }
             }else { // means for update
+                const result = await updateTodo(form);
 
+                if(result.data.results.modifiedCount >= 1){
+                    // updates "<td>" element
+                    const tr = document.getElementById(form._id);
+                    const td = tr.getElementsByTagName('td')[1];
+                    td.innerHTML = form.todoTitle
+                    
+                    // updates array of object
+                    $todolist.forEach((todo, i) => {
+                        if(todo._id == form._id){
+                            $todolist[i].todoTitle = form.todoTitle;
+                            $todolist[i].todoDescription = form.todoDescription;
+                        }
+                    });
+
+                    clearInputs();
+                }
             }
         }
 
@@ -292,7 +340,7 @@ window.onload = function () {
         $btnSave.removeAttribute('hidden');
         $btnNewTodo.innerHTML = 'CANCEL';
 
-        enabledInputs();
+        enabledInputs(['todoReference']);
         setFormTitle('EDIT');
     });
 

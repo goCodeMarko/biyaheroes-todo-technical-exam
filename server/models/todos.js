@@ -47,6 +47,26 @@ module.exports.saveTodo = async (req, cb) => {
     }
 }
 
+module.exports.updateTodo = async (req, cb) => {
+    try {
+        const id = req.body._id;
+        const body = {
+            todoTitle: req.body.todoTitle,
+            todoDescription: req.body.todoDescription
+        }
+        const result = await Todos.updateOne(
+            { _id: mongoose.Types.ObjectId(id) },
+            { $set: body }
+        )
+
+        $global.results = result;
+    } catch (error) {
+        console.error('Models::todos:updateTodo()', error);
+    } finally {
+        cb($global);
+    }
+}
+
 module.exports.deleteTodo = async (req, cb) => {
     try {
         const id = req.body.id;
@@ -56,7 +76,7 @@ module.exports.deleteTodo = async (req, cb) => {
             { $set: { isdeleted: true } }
         )
         */
-        const result = await Todos.deleteOne({'_id': id });
+        const result = await Todos.deleteOne({ '_id': mongoose.Types.ObjectId(id) });
 
         $global.results = result;
     } catch (error) {
@@ -68,8 +88,25 @@ module.exports.deleteTodo = async (req, cb) => {
 
 module.exports.checkTitleExists = async (req, cb) => {
     try {
-        const title = req.queryParams.title;
-        const result = await Todos.find({ 'todoTitle': title });
+        const title = req.queryParams.title.toLowerCase();
+        const id = req.queryParams.id;
+        let query = {};
+
+        if(id){ // when for update prevents to check its own data in db
+            query['$match']= {};
+            query['$match']['$and'] = [
+                { _id: { $ne: mongoose.Types.ObjectId(id) } },
+                { todoTitle: title }
+            ];
+        }else {
+            query['$match'] = {};
+            query['$match']['todoTitle'] = title;
+        }
+
+        const result = await Todos.aggregate([
+            { $project: { _id: 1, todoTitle: {$toLower: "$todoTitle"} } },
+            query
+        ]);
 
         $global.results = result.length;
     } catch (error) {
@@ -81,8 +118,26 @@ module.exports.checkTitleExists = async (req, cb) => {
 
 module.exports.checkReferenceExists = async (req, cb) => {
     try {
-        const reference = req.queryParams.reference;
-        const result = await Todos.find({ 'todoReference': reference });
+        const reference = req.queryParams.reference.toLowerCase();
+        const id = req.queryParams.id;
+
+        let query = {};
+
+        if (id) { // when for update prevents to check its own data in db
+            query['$match'] = { $and: [] };
+            query['$match']['$and'] = [
+                { _id: { $ne: mongoose.Types.ObjectId(id) } },
+                { todoReference: reference }
+            ];
+        } else {
+            query['$match'] = {};
+            query['$match']['todoReference'] = reference;
+        }
+        console.log('query', query);
+        const result = await Todos.aggregate([
+            { $project: { _id: 1, todoReference: { $toLower: "$todoReference" } } },
+            query
+        ]);
 
         $global.results = result.length;
     } catch (error) {

@@ -31,6 +31,18 @@ module.exports.saveTodo = async (req) => {
     }
 };
 
+module.exports.updateTodo = async (req) => {
+    try {
+        await model.updateTodo(req, (results) => {
+            $global.data = results;
+        });
+    } catch (error) {
+        console.error('Controller::Todos::updateTodo()', error);
+    } finally {
+        return $global;
+    }
+};
+
 module.exports.deleteTodo = async (req) => {
     try {
         await model.deleteTodo(req, (results) => {

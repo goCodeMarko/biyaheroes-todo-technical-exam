@@ -1,5 +1,5 @@
 window.onload = function () {
-    let $todolist, $form, $btnEdit, $btnSave, $btnNewTodo, $formControls, $tableHeaders, $buttons, $btnClear;
+    let $todolist, $form, $btnEdit, $btnSave, $btnNewTodo, $formControls, $tableHeaders, $buttons, $btnClear, $base;
 
 
     const init = (() => {
@@ -19,10 +19,11 @@ window.onload = function () {
         $btnSave        = document.querySelector('#btnSave');
         $btnNewTodo     = document.querySelector('#btnNewTodo');
         $btnClear       = document.querySelector('#btnClear');
+        $base = 'https://biyaheroes-todo-technical-exam.herokuapp.com/api/';
     })();
 
     async function getTodoListAPI() {
-        const raw = await fetch('https://biyaheroes-todo-technical-exam.herokuapp.com/api/getTodos', {
+        const raw = await fetch($base + 'getTodos', {
                         headers: {
                             'Accept': 'application/json'
                         },
@@ -131,7 +132,7 @@ window.onload = function () {
     }
 
     async function deleteTodoAPI(id) {
-        const raw    = await fetch('http://localhost:3000/api/deleteTodo', {
+        const raw = await fetch($base + 'deleteTodo', {
                         headers: {
                             'Accept': 'application/json',
                             'Content-Type': 'application/json'
@@ -196,7 +197,7 @@ window.onload = function () {
     }
 
     async function saveTodoAPI(formData) {
-        const raw = await fetch('http://localhost:3000/api/saveTodo', {
+        const raw = await fetch($base + 'saveTodo', {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -210,7 +211,7 @@ window.onload = function () {
     }
 
     async function updateTodo(formData) {
-        const raw = await fetch('http://localhost:3000/api/updateTodo', {
+        const raw = await fetch($base + 'updateTodo', {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -273,7 +274,7 @@ window.onload = function () {
 
     async function checkTitleExistsAPI(value, id) {
         const params = { title : value, id};
-        const raw = await fetch('http://localhost:3000/api/checkTitleExists' + '?' + (new URLSearchParams(params)).toString(), {
+        const raw = await fetch($base + 'checkTitleExists' + '?' + (new URLSearchParams(params)).toString(), {
             headers: {
                 'Accept': 'application/json'
             },
@@ -287,7 +288,7 @@ window.onload = function () {
     }
     async function checkReferenceExistsAPI(value, id) {
         const params = { reference: value, id };
-        const raw = await fetch('http://localhost:3000/api/checkReferenceExists' + '?' + (new URLSearchParams(params)).toString(), {
+        const raw = await fetch($base + 'checkReferenceExists' + '?' + (new URLSearchParams(params)).toString(), {
             headers: {
                 'Accept': 'application/json'
             },
@@ -443,7 +444,7 @@ window.onload = function () {
     });
 
     async function deleteAllAPI() {
-        const raw = await fetch('http://localhost:3000/api/deleteAll', {
+        const raw = await fetch($base + 'deleteAll', {
             headers: {
                 'Accept': 'application/json'
             },

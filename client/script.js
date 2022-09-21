@@ -24,8 +24,9 @@ window.onload = function () {
     })();
 
     function newDate() {
-        let date = new Date();
-        let newDate = new Date(date.setMonth(date.getMonth() + 1)); // increments one because the month is behind
+        let date1 = new Date();
+        let date2 = new Date(date1.setMonth(date1.getMonth() + 1)); // increments one because the month is behind
+        let newDate = new Date(date2.setHours(date2.getHours() + 8)); // increments 8 because the hour is behind
         let dateFn = [
             newDate.getFullYear(),
             newDate.getMonth(),

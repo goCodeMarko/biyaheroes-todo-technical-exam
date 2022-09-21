@@ -22,7 +22,7 @@ window.onload = function () {
     })();
 
     async function getTodoListAPI() {
-        const raw   = await fetch('http://localhost:3000/api/getTodos', {
+        const raw = await fetch('https://biyaheroes-todo-technical-exam.herokuapp.com/api/getTodos', {
                         headers: {
                             'Accept': 'application/json'
                         },

@@ -9,7 +9,7 @@ const
 
 
 
-mongoose.connect('mongodb+srv://pdulaca_user1:a7OdGl37bGDKMZ8W@cluster0.zmj3z2d.mongodb.net/db_biyaheroes?retryWrites=true&w=majority', {
+mongoose.connect(process.env.MONGODB, {
     "useUnifiedTopology": true,
     "useNewUrlParser": true
 }, () => {

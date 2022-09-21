@@ -3,8 +3,6 @@ window.onload = function () {
 
 
     const init = (() => {
-        getTodoListAPI();
-
         $form           = document.querySelector('#todoForm');
         $formControls   = [
                             { id: 'todoReference',   check: ['required', 'unique'] }, 
@@ -20,6 +18,8 @@ window.onload = function () {
         $btnNewTodo     = document.querySelector('#btnNewTodo');
         $btnClear       = document.querySelector('#btnClear');
         $base = 'https://biyaheroes-todo-technical-exam.herokuapp.com/api/';
+
+        getTodoListAPI();
     })();
 
     async function getTodoListAPI() {

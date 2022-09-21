@@ -86,6 +86,18 @@ module.exports.deleteTodo = async (req, cb) => {
     }
 }
 
+module.exports.deleteAll = async (req, cb) => {
+    try {
+        const result = await Todos.deleteMany({ });
+        
+        $global.results = result;
+    } catch (error) {
+        console.error('Models::todos:deleteAll()', error);
+    } finally {
+        cb($global);
+    }
+}
+
 module.exports.checkTitleExists = async (req, cb) => {
     try {
         const title = req.queryParams.title.toLowerCase();
@@ -120,7 +132,6 @@ module.exports.checkReferenceExists = async (req, cb) => {
     try {
         const reference = req.queryParams.reference.toLowerCase();
         const id = req.queryParams.id;
-
         let query = {};
 
         if (id) { // when for update prevents to check its own data in db

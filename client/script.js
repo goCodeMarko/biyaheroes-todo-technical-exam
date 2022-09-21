@@ -1,5 +1,5 @@
 window.onload = function () {
-    let $todolist, $form, $btnEdit, $btnSave, $btnNewTodo, $formControls, $tableHeaders, $buttons;
+    let $todolist, $form, $btnEdit, $btnSave, $btnNewTodo, $formControls, $tableHeaders, $buttons, $btnClear;
 
 
     const init = (() => {
@@ -17,6 +17,7 @@ window.onload = function () {
         $btnEdit        = document.querySelector('#btnEdit');
         $btnSave        = document.querySelector('#btnSave');
         $btnNewTodo     = document.querySelector('#btnNewTodo');
+        $btnClear     = document.querySelector('#btnClear');
     })();
 
     async function getTodoListAPI() {
@@ -30,6 +31,13 @@ window.onload = function () {
 
         if (result.success) {
             $todolist = result.data.results;
+
+            if ($todolist.length <= 1) {
+                btnDeleteAll('hide');
+            } else {
+                btnDeleteAll('show');
+            }
+
             arrangeTableData();
         }
     }
@@ -77,6 +85,12 @@ window.onload = function () {
             clearInputs();
             enabledInputs();
             document.getElementById(id).remove();
+
+            if($todolist.length <= 1){
+                btnDeleteAll('hide');
+            }else {
+                btnDeleteAll('show');
+            }
         }
     }
 
@@ -92,6 +106,13 @@ window.onload = function () {
         const result = await raw.json();
 
         return result;
+    }
+
+    function btnDeleteAll(method) {
+        const btn = document.getElementById('btnClear');
+
+        if(method == 'hide') btn.setAttribute('hidden', true);
+        else if(method == 'show') btn.removeAttribute('hidden');
     }
 
     function arrangeTableData() {
@@ -112,6 +133,8 @@ window.onload = function () {
                 if (tableHeader == key) {  // filters listed in tableHeader 
 
                     if (tableHeader == '_id') {
+                        const div = document.createElement('div');
+                        div.className = 'button-group';
 
                         $buttons.forEach(name => {
                             const btn = document.createElement('button'); // creates element "<button>"
@@ -120,7 +143,8 @@ window.onload = function () {
                             btn.className = 'button';
                             btn.onclick = () => btnFn(name, value);
 
-                            td.append(btn); // appends to "<td>"" results into "<td><button>View</button></td>"
+                            div.append(btn);
+                            td.append(div); // appends to "<td>"" results into "<td><button>View</button></td>"
                         })
                     } else {
                         td.innerHTML = value;
@@ -308,6 +332,12 @@ window.onload = function () {
                 if(result.data.results._id){  //pushes to the array when added successfully
                     $todolist.push(result.data.results);
 
+                    if ($todolist.length <= 1) {
+                        btnDeleteAll('hide');
+                    } else {
+                        btnDeleteAll('show');
+                    }
+
                     addTableRow(result.data.results); // adds "<tr>" to the "<table>"
                     clearInputs();
                 }
@@ -328,6 +358,7 @@ window.onload = function () {
                         }
                     });
 
+                    enabledInputs();
                     clearInputs();
                 }
             }
@@ -353,4 +384,37 @@ window.onload = function () {
         clearInputs();
         setFormTitle('ADD');
     });
+
+    $btnClear.addEventListener('click', async (e) => {
+        const result = await deleteAllAPI();
+        console.log(result);
+        $btnEdit.setAttribute('hidden', true);
+        $btnNewTodo.setAttribute('hidden', true);
+        $btnSave.removeAttribute('hidden');
+
+        enabledInputs();
+        clearInputs();
+        setFormTitle('ADD');
+    });
+
+    async function deleteAllAPI() {
+        const raw = await fetch('http://localhost:3000/api/deleteAll', {
+            headers: {
+                'Accept': 'application/json'
+            },
+            method: 'POST'
+        });
+        const result = await raw.json();
+
+        if(result.data.results.deletedCount){
+            btnDeleteAll('hide');
+
+            const rows = document.querySelectorAll("#todo-list tr");
+
+            rows.forEach(element => {
+                element.remove();
+            })
+        }
+        
+    }
 }

@@ -55,6 +55,18 @@ module.exports.deleteTodo = async (req) => {
     }
 };
 
+module.exports.deleteAll = async (req) => {
+    try {
+        await model.deleteAll(req, (results) => {
+            $global.data = results;
+        });
+    } catch (error) {
+        console.error('Controller::Todos::deleteAll()', error);
+    } finally {
+        return $global;
+    }
+};
+
 module.exports.checkTitleExists = async (req) => {
     try {
         await model.checkTitleExists(req, (results) => {

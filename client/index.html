@@ -33,9 +33,11 @@
                     <small class="error" id="errMsg_todoDescription"></small>
                 </div>
 
-                <button type="button" id="btnNewTodo" hidden>ADD NEW TODO</button>
-                <button type="submit" id="btnSave">SAVE</button>
-                <button type="button" id="btnEdit" hidden>EDIT</button>
+                <div class="button-group">
+                    <button type="button" id="btnNewTodo" hidden>ADD NEW TODO</button>
+                    <button type="submit" id="btnSave">SAVE</button>
+                    <button type="button" id="btnEdit" hidden>EDIT</button>
+                </div>
             </form>
         </div>
         <div>
@@ -51,6 +53,9 @@
 
                 </tbody>
             </table>
+            <div class="button-group" style="padding:1em;">
+                <button type="button" id="btnClear" hidden>Delete All</button>
+            </div>
         </div>
     </div>
 </body>

@@ -67,6 +67,13 @@ const server = http.createServer(async (req, res) => {
                 res.writeHead(200, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify(result));
             }
+
+            if (req.rawURL == '/api/deleteAll') {
+                const result = await todosController.deleteAll(req);
+
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify(result));
+            }
             break;
         case 'PUT':
             if (req.rawURL == '/api/updateTodo') {

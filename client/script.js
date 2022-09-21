@@ -17,8 +17,8 @@ window.onload = function () {
         $btnSave        = document.querySelector('#btnSave');
         $btnNewTodo     = document.querySelector('#btnNewTodo');
         $btnClear       = document.querySelector('#btnClear');
-        // $base = 'https://biyaheroes-todo-technical-exam.herokuapp.com:'+ process.env.PORT +'/api/';
-        $base = 'http://localhost:3000/api/';            
+        $base = 'https://biyaheroes-todo-technical-exam.herokuapp.com:'+ process.env.PORT +'/api/';
+        // $base = 'http://localhost:3000/api/';            
         getTodoListAPI();
         newDate();
     })();
@@ -43,7 +43,7 @@ window.onload = function () {
             formattedDate += digit;
         })
         console.log(+formattedDate);
-        return +formattedDate; // "+" to make the string converts to number
+        // return +formattedDate; // "+" to make the string converts to number
     }
 
     async function getTodoListAPI() {

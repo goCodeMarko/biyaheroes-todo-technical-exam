@@ -32,6 +32,10 @@
                     <textarea name="todoDescription" id="todoDescription" cols="30" rows="10"></textarea>
                     <small class="error" id="errMsg_todoDescription"></small>
                 </div>
+                <div class="form-group" id="dateCreated-container" hidden>
+                    <label for="isoDate">Date Created</label>
+                    <input type="datetime-local" name="isoDate" id="isoDate" disabled>
+                </div>
 
                 <div class="button-group">
                     <button type="button" id="btnNewTodo" hidden>ADD NEW TODO</button>

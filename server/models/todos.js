@@ -1,6 +1,7 @@
 const
     path       = require('path'),
     base       = path.basename(__filename, '.js'),
+    lib        = require('../library/index'),
     mongoose   = require('mongoose');
 let $global    = { results: [] };
 
@@ -8,7 +9,7 @@ Todos = mongoose.model(base, mongoose.Schema({
     todoReference:      { type: String, required: true },
     todoTitle:          { type: String, default: 0, required: true },
     todoDescription:    { type: String, required: true },
-    todoDatetimestamp:  { type: Date, default: new Date() },
+    todoDatetimestamp:  { type: Number, default: lib.newDate() },
     // isdeleted:          { type: Boolean, default: false }
 }));
 

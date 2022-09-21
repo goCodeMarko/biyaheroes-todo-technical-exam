@@ -85,3 +85,26 @@ module.exports.clientFiles = async (url, res) => {
         });
     }
 }
+
+module.exports.newDate = () => {
+    let date = new Date();
+    let newDate = new Date(date.setMonth(date.getMonth() + 1)); // increments one because the month is behind
+    let dateFn = [
+        newDate.getFullYear(),
+        newDate.getMonth(),
+        newDate.getDate(),
+        newDate.getHours(),
+        newDate.getMinutes(),
+        newDate.getSeconds()
+    ]
+    let formattedDate = '';
+
+    dateFn.forEach(fn => { // loops each date functions
+        let digit = fn;
+        if(digit < 10) digit = '0'+ digit; // prepends zero when digit is lower than 10
+
+        formattedDate += digit;
+    })
+
+    return +formattedDate; // "+" to make the string converts to number
+}

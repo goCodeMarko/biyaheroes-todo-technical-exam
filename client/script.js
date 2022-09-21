@@ -10,6 +10,7 @@ window.onload = function () {
                             { id: 'todoReference',   check: ['required', 'unique'] }, 
                             { id: 'todoTitle',       check: ['required', 'unique'] }, 
                             { id: 'todoDescription', check: ['required'] },
+                            { id: 'isoDate',         check: [] },
                             { id: '_id',             check: [] }
                         ];
         $tableHeaders   = ['todoReference', 'todoTitle', 'todoDatetimestamp', '_id'];
@@ -17,7 +18,7 @@ window.onload = function () {
         $btnEdit        = document.querySelector('#btnEdit');
         $btnSave        = document.querySelector('#btnSave');
         $btnNewTodo     = document.querySelector('#btnNewTodo');
-        $btnClear     = document.querySelector('#btnClear');
+        $btnClear       = document.querySelector('#btnClear');
     })();
 
     async function getTodoListAPI() {
@@ -29,9 +30,16 @@ window.onload = function () {
                     });
         const result = await raw.json();
 
-        if (result.success) {
-            $todolist = result.data.results;
 
+        if (result.success) {
+            const formattedResult = result.data.results.map(todo => {
+                todo.isoDate = formatDate(todo.todoDatetimestamp, 'ISO');
+                todo.todoDatetimestamp = formatDate(todo.todoDatetimestamp, 'MM/DD/YYYY HH:mm');
+
+                return todo
+            })
+            $todolist = formattedResult;
+            console.log($todolist);
             if ($todolist.length <= 1) {
                 btnDeleteAll('hide');
             } else {
@@ -40,6 +48,34 @@ window.onload = function () {
 
             arrangeTableData();
         }
+    }
+
+    function formatDate(date, format){
+        let dateString = date.toString();
+        let newDate = {
+            month: dateString.slice(4, 6),
+            year: dateString.slice(0, 4),
+            day: dateString.slice(6, 8),
+            hour: dateString.slice(8, 10),
+            minute: dateString.slice(10, 12),
+            second: dateString.slice(12, 14),
+        }
+        let result;
+
+        switch (format) {
+            case 'MM/DD/YYYY HH:mm':
+                result = `${newDate.month}/${newDate.day}/${newDate.year} ${newDate.hour}:${newDate.minute}`;
+
+                break;
+            case 'ISO':
+                result = `${newDate.year}-${newDate.month}-${newDate.day}T${newDate.hour}:${newDate.minute}`;
+
+                break;
+            default:
+                break;
+        }
+
+        return result;
     }
 
     function btnFn(type, id) {
@@ -271,6 +307,8 @@ window.onload = function () {
 
     function populate(data) { // populates the forms when viewing
         const objects = Object.entries(data); // converts the props and keys into an array
+        const isoDateInput = document.getElementById('dateCreated-container');
+        isoDateInput.removeAttribute('hidden');
 
         for (const [key, value] of objects) { // loops the array
             const input = document.getElementById(key);
@@ -302,11 +340,15 @@ window.onload = function () {
     }
 
     function clearInputs() {
+        const isoDateInput = document.getElementById('dateCreated-container');
+        isoDateInput.setAttribute('hidden', true);
+
         $formControls.forEach(control => { //clears the input field depends to the list of form controls array
             const input = document.getElementById(control.id);
             input.value = '';
+            
 
-            if (control.id != '_id') {
+            if (control.id != '_id' && control.id != 'isoDate') {
                 const input = document.getElementById(control.id);
                 const small = document.getElementById('errMsg_' + control.id);
                 input.style.borderColor = 'black';
@@ -330,6 +372,9 @@ window.onload = function () {
                 const result = await saveTodoAPI(form);
                 
                 if(result.data.results._id){  //pushes to the array when added successfully
+                    console.log(result.data.results);
+                    result.data.results.isoDate = formatDate(result.data.results.todoDatetimestamp, 'ISO');
+                    result.data.results.todoDatetimestamp = formatDate(result.data.results.todoDatetimestamp, 'MM/DD/YYYY HH:mm');
                     $todolist.push(result.data.results);
 
                     if ($todolist.length <= 1) {
@@ -371,7 +416,7 @@ window.onload = function () {
         $btnSave.removeAttribute('hidden');
         $btnNewTodo.innerHTML = 'CANCEL';
 
-        enabledInputs(['todoReference']);
+        enabledInputs(['todoReference', 'isoDate']);
         setFormTitle('EDIT');
     });
 

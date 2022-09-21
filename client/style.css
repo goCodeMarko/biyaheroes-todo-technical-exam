@@ -11,7 +11,11 @@ body {
     gap: 3em;
 }
 
-
+.button-group{
+  display: flex;
+  justify-content: center;
+  gap: .5em;
+}
 
 .table {
     border-collapse: collapse;
@@ -26,12 +30,9 @@ body {
 
 
 .section-a {
- background-color:aliceblue;
+ background-color: #00afe928;
+ border: #00afe97f 2px solid;
  padding: 20px;
- border-radius: 5px;
-}
-.section-a button{
- padding: 10px;
  border-radius: 5px;
 }
 .section-a h2 {

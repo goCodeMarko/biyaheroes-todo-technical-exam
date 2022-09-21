@@ -33,6 +33,7 @@ window.onload = function () {
 
 
         if (result.success) {
+            console.log(result.data.results);
             const formattedResult = result.data.results.map(todo => {
                 todo.isoDate = formatDate(todo.todoDatetimestamp, 'ISO');
                 todo.todoDatetimestamp = formatDate(todo.todoDatetimestamp, 'MM/DD/YYYY HH:mm');

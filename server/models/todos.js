@@ -9,7 +9,7 @@ Todos = mongoose.model(base, mongoose.Schema({
     todoReference:      { type: String, required: true },
     todoTitle:          { type: String, default: 0, required: true },
     todoDescription:    { type: String, required: true },
-    todoDatetimestamp:  { type: Number, default: lib.newDate() },
+    todoDatetimestamp:  { type: Number, required: true},
     // isdeleted:          { type: Boolean, default: false }
 }));
 
@@ -35,6 +35,7 @@ module.exports.saveTodo = async (req, cb) => {
             todoReference: req.body.todoReference,
             todoTitle: req.body.todoTitle,
             todoDescription: req.body.todoDescription,
+            todoDatetimestamp: lib.newDate() 
         }
 
         const newTodos = new Todos(data);

@@ -89,7 +89,7 @@ module.exports.clientFiles = async (url, res) => {
 module.exports.newDate = () => {
     let date1 = new Date();
     date1 = new Date(date1.setMonth(date1.getMonth() + 1)); // increments one because the month is behind
-    date1 = new Date(date1.setTime(date1.getTime() + 8)); // increments 8 because the hour is behind
+    date1 = new Date(date1.setHours(date1.getHours() + 8)); // increments 8 because the hour is behind
     let dateFn = [
         date1.getFullYear(),
         date1.getMonth(),

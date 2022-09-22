@@ -20,32 +20,7 @@ window.onload = function () {
         $base = 'https://biyaheroes-todo-technical-exam.herokuapp.com/api/';
         // $base = 'http://localhost:3000/api/';            
         getTodoListAPI();
-        newDate();
     })();
-
-    function newDate() {
-        let date1 = new Date();
-        let date2 = new Date(date1.setMonth(date1.getMonth() + 1)); // increments one because the month is behind
-        let newDate = new Date(date2.setHours(date2.getHours() + 8)); // increments 8 because the hour is behind
-        let dateFn = [
-            newDate.getFullYear(),
-            newDate.getMonth(),
-            newDate.getDate(),
-            newDate.getHours(),
-            newDate.getMinutes(),
-            newDate.getSeconds()
-        ]
-        let formattedDate = '';
-
-        dateFn.forEach(fn => { // loops each date functions
-            let digit = fn;
-            if (digit < 10) digit = '0' + digit; // prepends zero when digit is lower than 10
-
-            formattedDate += digit;
-        })
-        console.log(+formattedDate);
-        // return +formattedDate; // "+" to make the string converts to number
-    }
 
     async function getTodoListAPI() {
         const raw = await fetch($base + 'getTodos', {
@@ -56,10 +31,7 @@ window.onload = function () {
                     });
         const result = await raw.json();
 
-
         if (result.success) {
-            console.log(result.data.results);
-            console.log(new Date());
             const formattedResult = result.data.results.map(todo => {
                 todo.isoDate = formatDate(todo.todoDatetimestamp, 'ISO');
                 todo.todoDatetimestamp = formatDate(todo.todoDatetimestamp, 'MM/DD/YYYY HH:mm');
@@ -67,7 +39,7 @@ window.onload = function () {
                 return todo
             })
             $todolist = formattedResult;
-            console.log($todolist);
+
             if ($todolist.length <= 1) {
                 btnDeleteAll('hide');
             } else {
@@ -400,7 +372,7 @@ window.onload = function () {
                 const result = await saveTodoAPI(form);
                 
                 if(result.data.results._id){  //pushes to the array when added successfully
-                    console.log(result.data.results);
+
                     result.data.results.isoDate = formatDate(result.data.results.todoDatetimestamp, 'ISO');
                     result.data.results.todoDatetimestamp = formatDate(result.data.results.todoDatetimestamp, 'MM/DD/YYYY HH:mm');
                     $todolist.push(result.data.results);
@@ -460,7 +432,7 @@ window.onload = function () {
 
     $btnClear.addEventListener('click', async (e) => {
         const result = await deleteAllAPI();
-        console.log(result);
+
         $btnEdit.setAttribute('hidden', true);
         $btnNewTodo.setAttribute('hidden', true);
         $btnSave.removeAttribute('hidden');

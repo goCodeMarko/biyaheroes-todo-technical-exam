@@ -94,7 +94,7 @@ module.exports.newDate = () => {
         newDate.getFullYear(),
         newDate.getMonth(),
         newDate.getDate(),
-        newDate.getHours(),
+        newDate.getUTCHours(),
         newDate.getMinutes(),
         newDate.getSeconds()
     ]

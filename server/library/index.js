@@ -88,15 +88,15 @@ module.exports.clientFiles = async (url, res) => {
 
 module.exports.newDate = () => {
     let date1 = new Date();
-    let date2 = new Date(date1.setMonth(date1.getMonth() + 1)); // increments one because the month is behind
-    let newDate = new Date(date2.setHours(date2.getHours() + 8)); // increments 8 because the hour is behind
+    date1 = new Date(date1.setMonth(date1.getMonth() + 1)); // increments one because the month is behind
+    date1 = new Date(date1.setHours(date1.getHours() + 8)); // increments 8 because the hour is behind
     let dateFn = [
-        newDate.getFullYear(),
-        newDate.getMonth(),
-        newDate.getDate(),
-        newDate.getUTCHours(),
-        newDate.getMinutes(),
-        newDate.getSeconds()
+        date1.getFullYear(),
+        date1.getMonth(),
+        date1.getDate(),
+        date1.getUTCHours(),
+        date1.getUTCMinutes(),
+        date1.getUTCSeconds()
     ]
     let formattedDate = '';
 
